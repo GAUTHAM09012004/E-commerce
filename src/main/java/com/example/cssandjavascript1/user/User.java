@@ -14,6 +14,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,14 +65,25 @@ public class User implements UserDetails
     @JoinColumn(name = "userinfo_id")
     private UserInfo userInfo;
 
+    @JsonManagedReference("userproduct")
     @ManyToMany(cascade = CascadeType.ALL
-            ,fetch = FetchType.LAZY)
+            ,fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_product",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products;
+    private List<Product> products= new ArrayList<>();
+
+    @JsonManagedReference("usercart")
+    @ManyToMany(cascade = CascadeType.ALL
+            ,fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_cart",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> cart= new ArrayList<>();
 
     @JsonManagedReference("userreview")
     @OneToMany(mappedBy = "user",
@@ -127,11 +139,4 @@ public class User implements UserDetails
         this.email = email;
     }
 
-    public List<Product> products() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
 }

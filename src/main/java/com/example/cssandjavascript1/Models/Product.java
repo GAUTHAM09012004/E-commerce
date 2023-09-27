@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -40,14 +41,22 @@ public class Product {
     @Column(name = "expected_date_of_arrival")
     private String date;
 
+    @JsonIgnore
+    @JsonBackReference(value="userproduct")
     @ManyToMany(mappedBy = "products")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
+
+
+    @JsonIgnore
+    @JsonBackReference(value="usercart")
+    @ManyToMany(mappedBy = "cart")
+    private List<User> userscart = new ArrayList<>();
 
     @JsonBackReference(value = "productshipping")
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Shipping shipping;
 
-    @JsonBackReference(value ="productcategory")
+    @JsonBackReference(value = "productcategory")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;

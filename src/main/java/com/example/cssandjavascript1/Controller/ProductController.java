@@ -2,15 +2,12 @@ package com.example.cssandjavascript1.Controller;
 
 import com.example.cssandjavascript1.Models.CategoryRepository;
 import com.example.cssandjavascript1.Models.Product;
+import com.example.cssandjavascript1.Models.ProductRespository;
 import com.example.cssandjavascript1.auth.ProductRequest;
-import com.example.cssandjavascript1.config.JwtService;
-import com.example.cssandjavascript1.user.UseRepository;
-import com.fasterxml.jackson.annotation.OptBoolean;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.cssandjavascript1.Models.ProductRespository;
 
 import java.util.HashMap;
 import java.util.List;
