@@ -1,10 +1,11 @@
 package com.example.cssandjavascript1.auth;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,17 +24,26 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication Controller")
 public class AuthenticationController {
 
     private final AuthenticationService service;
 
+    @Operation(
+            description = "Post Endpoint for Registration",
+            summary = "returns a otp for verification"
+    )
     @PostMapping("/register")
     public ResponseEntity<String> register(
             @RequestBody RegisterRequest request
-    )
-    {
+    ) {
         return service.register(request);
     }
+
+    @Operation(
+            description = "Post Endpoint for Verification",
+            summary = "Authenticates the otp and returns a jwt token"
+    )
     @PostMapping("/verify")
     public ResponseEntity<AuthenticationResponse> verify(
             @RequestBody VerificationRequest verificationRequest
@@ -41,6 +51,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.verifyCode(verificationRequest));
     }
 
+
+    @Operation(
+            description = "Post Endpoint for Authentication",
+            summary = "Authenticates the user and returns a jwt token"
+    )
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
@@ -48,6 +63,10 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @Operation(
+            description = "Post Endpoint for Refresh Token",
+            summary = "Refreshes the jwt token and returns a new jwt token"
+    )
     @PostMapping("/refresh-token")
     public void refreshToken(
             HttpServletRequest request,
@@ -55,6 +74,5 @@ public class AuthenticationController {
     ) throws IOException {
         service.refreshToken(request, response);
     }
-
 
 }

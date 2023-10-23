@@ -1,14 +1,14 @@
-package com.example.cssandjavascript1.Mockcontroller;
+package com.example.cssandjavascript1.Product;
 
 import com.example.cssandjavascript1.Order.Order;
 import com.example.cssandjavascript1.Order.OrderRepo;
-import com.example.cssandjavascript1.Product.Product;
-import com.example.cssandjavascript1.Product.ProductRespository;
 import com.example.cssandjavascript1.config.JwtService;
 import com.example.cssandjavascript1.shipping.Shipping;
 import com.example.cssandjavascript1.shipping.Shippingrepo;
 import com.example.cssandjavascript1.user.UseRepository;
 import com.example.cssandjavascript1.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/carts")
 @RequiredArgsConstructor
+@Tag(name = "Cart Controller")
 public class CartController {
     private final UseRepository userRepository;
     private final ProductRespository productRespository;
@@ -27,6 +28,10 @@ public class CartController {
     private final OrderRepo orderRepo;
     private final Shippingrepo shippingRepo;
 
+    @Operation(
+            description = "Get Endpoint for User Cart",
+            summary = "Returns a List of Products in the User's Cart"
+    )
     @GetMapping
     public List<Product> Displayallusercart(@RequestHeader("Authorization") String jwtToken) {
         try {
@@ -39,6 +44,10 @@ public class CartController {
         }
     }
 
+    @Operation(
+            description = "Get Endpoint for Checkout of products in User Cart",
+            summary = "Checkouts all products in the User's Cart and proceeds to payment"
+    )
     @GetMapping("/checkout")
     public ResponseEntity<String> checkoutProducts(@RequestHeader("Authorization") String jwtToken) {
         try {
@@ -58,6 +67,10 @@ public class CartController {
         return ResponseEntity.status(200).body("Checkout successful");
     }
 
+    @Operation(
+            description = "Get Endpoint for Checkout of a product in User Cart",
+            summary = "Checkouts a product in the User's Cart and proceeds to payment"
+    )
     @GetMapping("/checkout/{id}")
     public ResponseEntity<String> checkoutProduct(
             @RequestHeader("Authorization") String jwtToken,
@@ -107,6 +120,10 @@ public class CartController {
     }
 
 
+    @Operation(
+            description = "Post Endpoint for User Cart",
+            summary = "Adds a Product to the User's Cart"
+    )
     @PostMapping("/{id}")
     public ResponseEntity<String> addProductToUser(
             @PathVariable Integer id,
@@ -130,6 +147,10 @@ public class CartController {
         }
     }
 
+    @Operation(
+            description = "Delete Endpoint for User Cart",
+            summary = "Deletes a Product from the User's Cart"
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<String> removeProductFromUser(
             @PathVariable Integer id,

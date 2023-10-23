@@ -1,13 +1,16 @@
 package com.example.cssandjavascript1.Product;
 
-import com.example.cssandjavascript1.category.CategoryRepository;
-import com.example.cssandjavascript1.reviews.*;
 import com.example.cssandjavascript1.Order.OrderRepo;
-import com.example.cssandjavascript1.reviews.ReviewDto;
+import com.example.cssandjavascript1.category.CategoryRepository;
 import com.example.cssandjavascript1.config.JwtService;
+import com.example.cssandjavascript1.reviews.ReviewRepo;
+import com.example.cssandjavascript1.reviews.ReviewRequest;
+import com.example.cssandjavascript1.reviews.Reviews;
 import com.example.cssandjavascript1.shipping.Shippingrepo;
 import com.example.cssandjavascript1.user.UseRepository;
 import com.example.cssandjavascript1.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@Tag(name = "Product Controller")
 public class ProductController {
 
     private final JwtService jwtService;
@@ -32,16 +36,31 @@ public class ProductController {
     private final Shippingrepo shippingRepo;
     private final ReviewRepo reviewRepo;
 
+    @Operation(
+            description = "Get endpoint for List of Products",
+            summary = "Returns a List of all Products"
+
+    )
     @GetMapping
     public List<Product> findallproducts() {
         return productRespository.findAllProducts();
     }
 
+    @Operation(
+            description = "Get endpoint for Product",
+            summary = "Returns Product of the given id"
+
+    )
     @GetMapping("/{id}")
     public Optional<Product> findproductsbyid(@PathVariable Integer id) {
         return productRespository.findById(id);
     }
 
+    @Operation(
+            description = "Delete endpoint for a Prouct",
+            summary = "Deletes a Product of the given id,can only be done by admin"
+
+    )
     @PreAuthorize("hasAuthority('admin:delete')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> productsbyid(@PathVariable Integer id) {
@@ -49,6 +68,11 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted");
     }
 
+    @Operation(
+            description = "Post endpoint for a Prouct",
+            summary = "Creates a Product,All product details,must be given as a RequestBody" +
+                    "can only be done by admin"
+    )
     @PreAuthorize("hasAuthority('admin:create')")
     @PostMapping()
     public ResponseEntity<String> createProduct(@RequestBody ProductRequest product) {
@@ -65,6 +89,11 @@ public class ProductController {
         return ResponseEntity.ok("Product created successfully");
     }
 
+    @Operation(
+            description = "Put Endpoint for a Prouct",
+            summary = "Updates a Product,All product details,must be given as a RequestBody" +
+                    "can only be done by admin"
+    )
     @PreAuthorize("hasAuthority('admin:update')")
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyproductybyid(@RequestBody ProductRequest product, @PathVariable Integer id) {
@@ -88,6 +117,11 @@ public class ProductController {
         }
     }
 
+    @Operation(
+            description = "Patch Endpoint for a Prouct",
+            summary = "Updates a Product,particular info about the product must be given as a RequestBody" +
+                    "can only be done by admin"
+    )
     @PreAuthorize("hasAuthority('admin:update')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProductInfo(
@@ -121,6 +155,10 @@ public class ProductController {
         }
     }
 
+    @Operation(
+            description = "Get Endpoint for a Product of a Particular User",
+            summary = " Returns a List of Products of a particular user"
+    )
     @GetMapping("/user")
     public ResponseEntity<List<Product>> findProductsOfUser(@RequestHeader("Authorization") String jwtToken) {
         try {
@@ -143,6 +181,10 @@ public class ProductController {
         }
     }
 
+    @Operation(
+            description = "Delete Endpoint for a Product of a Particular User",
+            summary = " Deletes a Product of a particular user"
+    )
     @DeleteMapping("/user/{id}")
     public ResponseEntity<String> DeleteProductsOfUser(@PathVariable Integer id, @RequestHeader("Authorization") String jwtToken) {
         try {
@@ -165,8 +207,12 @@ public class ProductController {
         }
     }
 
+    @Operation(
+            description = "Post Endpoint for a Product Review by a User",
+            summary = " Adds a Review to a Product by a particular user and updates the rating of the product"
+    )
     @PostMapping("/user/reviews/{id}")
-    public ResponseEntity<String> givereviews(@PathVariable Integer id, @RequestHeader("Authorization") String jwtToken, @RequestBody ReviewDto reviewDto) {
+    public ResponseEntity<String> givereviews(@PathVariable Integer id, @RequestHeader("Authorization") String jwtToken, @RequestBody ReviewRequest reviewDto) {
         try {
             String username = jwtService.extractUserEmailFromJwt(jwtToken);
             User user = useRepository.findByEmail(username);
