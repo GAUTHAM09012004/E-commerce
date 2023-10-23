@@ -1,11 +1,10 @@
-package com.example.cssandjavascript1.Models;
+package com.example.cssandjavascript1.reviews;
 
+import com.example.cssandjavascript1.Product.Product;
 import com.example.cssandjavascript1.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
 
 @Data
 @Builder
@@ -22,7 +21,7 @@ public class Reviews {
     private Integer id;
 
     @Column(name = "rating")
-    private String rating;
+    private Float rating;
 
     @Column(name = "reason")
     private String reason;

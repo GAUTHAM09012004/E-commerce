@@ -1,7 +1,5 @@
-package com.example.cssandjavascript1.Controller;
+package com.example.cssandjavascript1.category;
 
-import com.example.cssandjavascript1.Models.Category;
-import com.example.cssandjavascript1.Models.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

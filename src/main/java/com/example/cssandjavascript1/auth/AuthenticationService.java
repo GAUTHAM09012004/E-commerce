@@ -51,7 +51,8 @@ public class AuthenticationService {
 
 
     public ResponseEntity<String> register(RegisterRequest request) {
-        User tempuser = User.builder()
+
+        tempuser = User.builder()
                 .firstname(request.firstname())
                 .lastname(request.lastname())
                 .email(request.email())

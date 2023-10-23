@@ -1,5 +1,6 @@
 package com.example.cssandjavascript1.auth;
-import com.example.cssandjavascript1.user.Role;
+import com.example.cssandjavascript1.user.models.Role;
+
 
 public record RegisterRequest (
     String firstname,

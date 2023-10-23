@@ -1,6 +1,6 @@
-package com.example.cssandjavascript1.Models;
+package com.example.cssandjavascript1.category;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.example.cssandjavascript1.Product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

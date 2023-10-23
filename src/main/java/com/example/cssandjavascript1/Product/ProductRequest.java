@@ -1,4 +1,4 @@
-package com.example.cssandjavascript1.auth;
+package com.example.cssandjavascript1.Product;
 public record ProductRequest(
         String product_name,
         int stock,

@@ -1,4 +1,4 @@
-package com.example.cssandjavascript1.Controller;
+package com.example.cssandjavascript1.Mockcontroller;
 
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,11 +1,8 @@
-package com.example.cssandjavascript1.Controller;
+package com.example.cssandjavascript1.user.userinfo;
 
-import com.example.cssandjavascript1.auth.RegisterExtraInfoRequest;
 import com.example.cssandjavascript1.config.JwtService;
 import com.example.cssandjavascript1.user.UseRepository;
 import com.example.cssandjavascript1.user.User;
-import com.example.cssandjavascript1.user.UserInfo;
-import com.example.cssandjavascript1.user.UserInfoRespository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class DetailsController {
+public class AddetailsController {
 
     private final UserInfoRespository userInfoRepository;
     private final UseRepository repository;

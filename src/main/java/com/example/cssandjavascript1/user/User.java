@@ -1,11 +1,13 @@
 package com.example.cssandjavascript1.user;
 
 
-import com.example.cssandjavascript1.Models.Order;
-import com.example.cssandjavascript1.Models.Product;
-import com.example.cssandjavascript1.Models.Reviews;
-import com.example.cssandjavascript1.Models.Shipping;
+import com.example.cssandjavascript1.Order.Order;
+import com.example.cssandjavascript1.Product.Product;
+import com.example.cssandjavascript1.reviews.Reviews;
+import com.example.cssandjavascript1.shipping.Shipping;
 import com.example.cssandjavascript1.token.Token;
+import com.example.cssandjavascript1.user.models.Role;
+import com.example.cssandjavascript1.user.userinfo.UserInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -54,12 +56,6 @@ public class User implements UserDetails
             fetch = FetchType.LAZY)
     private List<Token> tokens;
 
-    @JsonManagedReference("orderuser")
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    private List<Order> orders;
-
     @JsonManagedReference("userinfo")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userinfo_id")
@@ -91,9 +87,15 @@ public class User implements UserDetails
             fetch = FetchType.LAZY)
     private List<Reviews> reviews;
 
+    @JsonManagedReference("orderuser")
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<Order> orders;
+
     @JsonBackReference(value="usershipping")
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Shipping shipping;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Shipping> shipping;
 
     @JsonIgnore
     @Override

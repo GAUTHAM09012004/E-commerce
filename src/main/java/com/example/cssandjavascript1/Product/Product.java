@@ -1,5 +1,9 @@
-package com.example.cssandjavascript1.Models;
+package com.example.cssandjavascript1.Product;
 
+import com.example.cssandjavascript1.category.Category;
+import com.example.cssandjavascript1.Order.Order;
+import com.example.cssandjavascript1.reviews.Reviews;
+import com.example.cssandjavascript1.shipping.Shipping;
 import com.example.cssandjavascript1.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,19 +46,20 @@ public class Product {
     private String date;
 
     @JsonIgnore
-    @JsonBackReference(value="userproduct")
+    @JsonBackReference(value = "userproduct")
     @ManyToMany(mappedBy = "products")
     private List<User> users = new ArrayList<>();
 
 
     @JsonIgnore
-    @JsonBackReference(value="usercart")
+    @JsonBackReference(value = "usercart")
     @ManyToMany(mappedBy = "cart")
     private List<User> userscart = new ArrayList<>();
 
+    @JsonIgnore
     @JsonBackReference(value = "productshipping")
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Shipping shipping;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Shipping> shipping;
 
     @JsonBackReference(value = "productcategory")
     @ManyToOne(fetch = FetchType.EAGER)

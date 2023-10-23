@@ -1,4 +1,4 @@
-package com.example.cssandjavascript1.user;
+package com.example.cssandjavascript1.user.models;
 
 
 import lombok.Getter;

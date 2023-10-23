@@ -1,4 +1,4 @@
-package com.example.cssandjavascript1.Controller;
+package com.example.cssandjavascript1.user.userinfo;
 
 import com.example.cssandjavascript1.Email.EmailService;
 import com.example.cssandjavascript1.Email.OtpService;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
-public class UpdateController
+public class UpdatedetailsController
 {
     private final JwtService jwtService;
     private final UseRepository repository;

@@ -1,12 +1,17 @@
-package com.example.cssandjavascript1.Controller;
+package com.example.cssandjavascript1.Product;
 
-import com.example.cssandjavascript1.Models.CategoryRepository;
-import com.example.cssandjavascript1.Models.Product;
-import com.example.cssandjavascript1.Models.ProductRespository;
-import com.example.cssandjavascript1.auth.ProductRequest;
+import com.example.cssandjavascript1.category.CategoryRepository;
+import com.example.cssandjavascript1.reviews.*;
+import com.example.cssandjavascript1.Order.OrderRepo;
+import com.example.cssandjavascript1.reviews.ReviewDto;
+import com.example.cssandjavascript1.config.JwtService;
+import com.example.cssandjavascript1.shipping.Shippingrepo;
+import com.example.cssandjavascript1.user.UseRepository;
+import com.example.cssandjavascript1.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,8 +24,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductController {
 
+    private final JwtService jwtService;
+    private final UseRepository useRepository;
     private final ProductRespository productRespository;
     private final CategoryRepository categoryRespository;
+    private final OrderRepo orderRepo;
+    private final Shippingrepo shippingRepo;
+    private final ReviewRepo reviewRepo;
 
     @GetMapping
     public List<Product> findallproducts() {
@@ -32,12 +42,14 @@ public class ProductController {
         return productRespository.findById(id);
     }
 
+    @PreAuthorize("hasAuthority('admin:delete')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> productsbyid(@PathVariable Integer id) {
         productRespository.deleteById(id);
         return ResponseEntity.ok("Product deleted");
     }
 
+    @PreAuthorize("hasAuthority('admin:create')")
     @PostMapping()
     public ResponseEntity<String> createProduct(@RequestBody ProductRequest product) {
         Product product1 = Product.builder()
@@ -53,6 +65,7 @@ public class ProductController {
         return ResponseEntity.ok("Product created successfully");
     }
 
+    @PreAuthorize("hasAuthority('admin:update')")
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyproductybyid(@RequestBody ProductRequest product, @PathVariable Integer id) {
         try {
@@ -75,6 +88,7 @@ public class ProductController {
         }
     }
 
+    @PreAuthorize("hasAuthority('admin:update')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProductInfo(
             @PathVariable Integer id,
@@ -105,6 +119,81 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<Product>> findProductsOfUser(@RequestHeader("Authorization") String jwtToken) {
+        try {
+            String username = jwtService.extractUserEmailFromJwt(jwtToken);
+            User user = useRepository.findByEmail(username);
+
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            List<Product> products = user.getProducts();
+
+            if (products == null || products.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<String> DeleteProductsOfUser(@PathVariable Integer id, @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String username = jwtService.extractUserEmailFromJwt(jwtToken);
+            User user = useRepository.findByEmail(username);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            Product product = productRespository.findProductById(id);
+            if (product == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            user.getProducts().remove(product);
+            orderRepo.deleteOrderByUserAndProduct(user, product);
+            shippingRepo.deleteShippingByUserAndProduct(user, product);
+            useRepository.save(user);
+            return ResponseEntity.ok("Product deleted");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/user/reviews/{id}")
+    public ResponseEntity<String> givereviews(@PathVariable Integer id, @RequestHeader("Authorization") String jwtToken, @RequestBody ReviewDto reviewDto) {
+        try {
+            String username = jwtService.extractUserEmailFromJwt(jwtToken);
+            User user = useRepository.findByEmail(username);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            Product product = productRespository.findProductById(id);
+            if (product == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            Float oldrating = product.getRating();
+            oldrating += reviewDto.rating();
+            oldrating /= 2;
+            product.setRating(oldrating);
+            Reviews reviews1 = Reviews.builder()
+                    .rating(reviewDto.rating())
+                    .reason(reviewDto.reason())
+                    .user(user)
+                    .product(product)
+                    .build();
+            product.getReviews().add(reviews1);
+            reviewRepo.save(reviews1);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return ResponseEntity.ok("Review added");
     }
 }
 

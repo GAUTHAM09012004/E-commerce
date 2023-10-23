@@ -1,5 +1,6 @@
-package com.example.cssandjavascript1.user;
+package com.example.cssandjavascript1.user.userinfo;
 
+import com.example.cssandjavascript1.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,9 +57,4 @@ public class UserInfo
     @Column(name = "country")
     private String country;
 
-    @Column(name="cart")
-    private String cart;
-
-    @Column(name="shipped")
-    private String shipped;
 }

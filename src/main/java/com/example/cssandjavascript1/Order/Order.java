@@ -1,5 +1,6 @@
-package com.example.cssandjavascript1.Models;
+package com.example.cssandjavascript1.Order;
 
+import com.example.cssandjavascript1.Product.Product;
 import com.example.cssandjavascript1.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

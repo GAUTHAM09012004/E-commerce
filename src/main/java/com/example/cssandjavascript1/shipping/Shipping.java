@@ -1,7 +1,9 @@
-package com.example.cssandjavascript1.Models;
+package com.example.cssandjavascript1.shipping;
 
 
+import com.example.cssandjavascript1.Product.Product;
 import com.example.cssandjavascript1.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,14 +23,17 @@ public class Shipping
     private Integer id;
 
     @JsonManagedReference("productshipping")
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
 
-    @JsonManagedReference("usershipping")
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference(value = "usershipping")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    public User user;
+
+    @Column(name = "shippingdate")
+    private String shippingdate;
 
 }

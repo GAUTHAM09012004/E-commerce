@@ -1,4 +1,4 @@
-package com.example.cssandjavascript1.auth;
+package com.example.cssandjavascript1.user.userinfo;
 public record RegisterExtraInfoRequest(
         String city,
         String state,
